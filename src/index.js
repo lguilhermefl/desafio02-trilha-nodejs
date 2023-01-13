@@ -29,18 +29,30 @@ function checksCreateTodosUserAvailability(request, response, next) {
   const amountUserTodos = user.todos.length;
 
   if (amountUserTodos >= 10 && !user.pro) {
-    return response
-      .status(400)
-      .send({
-        error: "Free max todos reached. Sign up to pro plan to continue.",
-      });
+    return response.status(400).send({
+      error: "Free max todos reached. Sign up to pro plan to continue.",
+    });
   }
 
   return next();
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
+  const { id } = request.params;
+
+  checksExistsUserAccount(request, response, next);
+
+  const { user } = request;
+
+  const todo = user.todos.find((todo) => todo.id === id);
+
+  if (!todo) {
+    return response.status(404).send({ error: "Todo not found!" });
+  }
+
+  request.todo = todo;
+
+  return next();
 }
 
 function findUserById(request, response, next) {
