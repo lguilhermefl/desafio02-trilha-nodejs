@@ -41,6 +41,12 @@ function checksTodoExists(request, response, next) {
   const { id } = request.params;
   const { user } = request;
 
+  const isUuid = validate(id);
+
+  if (!isUuid) {
+    return response.status(400).send({ error: "Id is not a valid UUID!" });
+  }
+
   const todo = user.todos.find((todo) => todo.id === id);
 
   if (!todo) {
